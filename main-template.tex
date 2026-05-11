@@ -1,0 +1,48 @@
+% !TEX program = xelatex
+% !BIB program = bibtex
+%
+% 北方工业大学本科毕业设计(论文) — 2026 格式修复版 · 示例主文件
+% 使用前请将 chinathesis.cls / chinathesis-numerical.bst / chinathesis-authoryear.bst 拷贝到本目录
+
+\documentclass[numerical]{chinathesis}
+
+% ====== 工程元信息 ======
+\title{毕业论文题目示例}
+\author{作者姓名}
+\advisor{指导教师姓名}
+\school{信息学院}
+\major{计算机科学与技术}
+\studentid{20210000000}
+\date{2026}
+
+% ====== 参考文献样式 ======
+\bibliographystyle{chinathesis-numerical}
+
+\begin{document}
+
+% ====== 前置部分：封面、中英文摘要、目录（沿用 plain 页码） ======
+\frontmatter
+
+\maketitle
+
+\include{chapters/abstract}   % 中英文摘要
+\tableofcontents               % 目录
+
+% ====== 正文部分：启用 fancy 页眉 ======
+\mainmatter
+\pagestyle{main}               % ← 必须：启用正文页眉"北方工业大学本科毕业设计(论文)" + 横线
+
+\include{chapters/chap01}      % 绪论
+\include{chapters/chap02}      % 相关技术综述
+\include{chapters/chap03}      % 系统设计
+\include{chapters/chap04}      % 系统实现
+\include{chapters/chap05}      % 实验与分析
+\include{chapters/chap06}      % 总结与展望
+
+% ====== 参考文献（字号强制 10.5pt）======
+\bibliography{bibs/refs}
+
+% ====== 致谢等后置部分 ======
+\include{chapters/thanks}
+
+\end{document}
