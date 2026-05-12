@@ -1,48 +1,89 @@
-% !TEX program = xelatex
-% !BIB program = bibtex
-%
-% 北方工业大学本科毕业设计(论文) — 2026 格式修复版 · 示例主文件
-% 使用前请将 chinathesis.cls / chinathesis-numerical.bst / chinathesis-authoryear.bst 拷贝到本目录
+% !TeX encoding = UTF-8
+% !TeX program = xelatex
+% !TeX spellcheck = en_US
 
-\documentclass[numerical]{chinathesis}
+\documentclass[bachelor,pdf,super,fontset=fandol]{chinathesis}
 
-% ====== 工程元信息 ======
-\title{毕业论文题目示例}
-\author{作者姓名}
-\advisor{指导教师姓名}
-\school{信息学院}
-\major{计算机科学与技术}
-\studentid{20210000000}
-\date{2026}
+\title{论文题目}
+\author{姓名}
+\enauthor{Name}
+\studentid{学号}
+\classname{班级}
+\major{专业}
+\college{学院}
+\supervisor{指导教师\quad 职称}
+\date{二〇二六年六月}
 
-% ====== 参考文献样式 ======
-\bibliographystyle{chinathesis-numerical}
+\entitle{English Title}
+\enauthor{Name}
+\enclassname{Class}
+\enmajor{Major}
+\encollege{College}
+\ensupervisor{Supervisor, Title}
+
+% 加载宏包和配置
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{siunitx}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+% 算法环境本地化与按章节编号
+\renewcommand{\algorithmicrequire}{\textbf{输入：}}
+\renewcommand{\algorithmicensure}{\textbf{输出：}}
+\renewcommand{\algorithmicreturn}{\textbf{返回}}
+\floatname{algorithm}{算法}
+\makeatletter
+\renewcommand{\thealgorithm}{\arabic{chapter}-\arabic{algorithm}}
+\@addtoreset{algorithm}{chapter}
+\makeatother
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, calc, fit, backgrounds}
+
+% 中英文混排断行优化：缓解 Overfull \hbox（中文段落中嵌入英文术语时常见）
+\emergencystretch=2em
+\tolerance=2000
+\hbadness=2000
+
+% 代码样式配置
+\lstset{
+  basicstyle=\small\ttfamily,
+  breaklines=true,
+  frame=single,
+  numbers=none,
+  tabsize=2,
+}
+
+\renewcommand\vec{\symbf}
 
 \begin{document}
 
-% ====== 前置部分：封面、中英文摘要、目录（沿用 plain 页码） ======
-\frontmatter
-
 \maketitle
+\makestatement
 
-\include{chapters/abstract}   % 中英文摘要
-\tableofcontents               % 目录
+\frontmatter
+\input{chapters/abstract}
+\tableofcontents
 
-% ====== 正文部分：启用 fancy 页眉 ======
 \mainmatter
-\pagestyle{main}               % ← 必须：启用正文页眉"北方工业大学本科毕业设计(论文)" + 横线
-
-\include{chapters/chap01}      % 绪论
-\include{chapters/chap02}      % 相关技术综述
-\include{chapters/chap03}      % 系统设计
-\include{chapters/chap04}      % 系统实现
-\include{chapters/chap05}      % 实验与分析
-\include{chapters/chap06}      % 总结与展望
-
-% ====== 参考文献（字号强制 10.5pt）======
+\pagestyle{main}
+\input{chapters/chap01}
+\input{chapters/chap02}
+\input{chapters/chap03}
+\input{chapters/chap04}
+\input{chapters/chap05}
+\input{chapters/chap06}
+\input{chapters/chap07}
+\input{chapters/thanks}
+\clearpage
 \bibliography{bibs/refs}
-
-% ====== 致谢等后置部分 ======
-\include{chapters/thanks}
 
 \end{document}

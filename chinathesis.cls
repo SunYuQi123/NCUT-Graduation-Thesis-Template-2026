@@ -239,6 +239,12 @@
 \linespread{1}\selectfont
 \newcommand\ustc@setchinese{%
   \xeCJKResetPunctClass
+  \xeCJKDeclareCharClass{HalfLeft}{%
+    "2018, "201C%
+  }%
+  \xeCJKDeclareCharClass{HalfRight}{%
+    "2019, "201D%
+  }%
 }
 \newcommand\ustc@setenglish{%
   \xeCJKDeclareCharClass{HalfLeft}{"2018, "201C}%
@@ -611,7 +617,7 @@
   \chapter*{#2}}
 \newenvironment{abstract}{%
 \begin{center}
-  {\sffamily\fontsize{22\bp@}{22\bp@}\selectfont
+  {\fontsize{22\bp@}{22\bp@}\selectfont
       \textbf{\ustc@title}\par}%
     \vskip 2.0cm%
 \end{center}
@@ -626,7 +632,7 @@
   %\ustc@entitle
   \@openrightfalse
   \begin{center}
-    {\sffamily\fontsize{22\bp@}{22\bp@}\selectfont
+    {\fontsize{22\bp@}{22\bp@}\selectfont\bfseries
     \textmd{\ustc@entitle}\par}%
       \vskip 2.0cm%
   \end{center}
@@ -638,22 +644,25 @@
   \ustc@setdefaultlanguage
 }
 \renewcommand\tableofcontents{%
-  \ustc@chapter{\contentsname}%
+  \clearpage
+  \pdfbookmark[0]{\contentsname}{toc}%
+  {\centering\bfseries\fontsize{12\bp@}{18\bp@}\selectfont\contentsname\par}%
+  \vskip 0\p@
   \@starttoc{toc}%
 }
 \newcommand\ustc@leaders{\titlerule*[9\bp@]{\textperiodcentered}}
 \titlecontents{chapter}
-  [\z@]{\addvspace{6\bp@}\fontsize{12\bp@}{20\bp@}\selectfont}
+  [\z@]{\addvspace{6\bp@}\fontsize{12\bp@}{18\bp@}\selectfont}
   {\contentspush{\thecontentslabel\unskip\hspace{\ccwd}}}{}
-  {\fontsize{12\bp@}{20\bp@}\selectfont\ustc@leaders\contentspage}
+  {\fontsize{12\bp@}{18\bp@}\selectfont\ustc@leaders\contentspage}
 \titlecontents{section}
-  [\ccwd]{\fontsize{12\bp@}{20\bp@}\selectfont}
+  [\ccwd]{\fontsize{12\bp@}{18\bp@}\selectfont}
   {\contentspush{\thecontentslabel\hspace{\ccwd}}}{}
-  {\fontsize{12\bp@}{20\bp@}\selectfont\ustc@leaders\contentspage}
+  {\fontsize{12\bp@}{18\bp@}\selectfont\ustc@leaders\contentspage}
 \titlecontents{subsection}
-  [2\ccwd]{\fontsize{12\bp@}{20\bp@}\selectfont}
+  [2\ccwd]{\fontsize{12\bp@}{18\bp@}\selectfont}
   {\contentspush{\thecontentslabel\hspace{\ccwd}}}{}
-  {\fontsize{12\bp@}{20\bp@}\selectfont\ustc@leaders\contentspage}
+  {\fontsize{12\bp@}{18\bp@}\selectfont\ustc@leaders\contentspage}
 \renewcommand\listoffigures{%
   \ustc@chapter{\listfigurename}%
   \@starttoc{lof}%
@@ -743,15 +752,16 @@
 \DeclareCaptionLabelSeparator{zhspace}{\hspace{\ccwd}}
 \captionsetup{
   format    = hang,
-  font      = footnotesize,
   labelfont = bf,
   labelsep  = zhspace,
 }
 \captionsetup[figure]{
+  font      = footnotesize,
   aboveskip = 6\bp@,
   belowskip = {12\bp@-\intextsep},
 }
 \captionsetup[table]{
+  font      = small,
   aboveskip = 6\bp@,
   belowskip = 6\bp@,
 }
@@ -852,15 +862,24 @@
 }
 \DeclareRobustCommand\inlinecite{\@inlinecite}
 \def\@inlinecite#1{\begingroup\let\@cite\NAT@citenum\citep{#1}\endgroup}
-\renewcommand\bibfont{\fontsize{10.5\bp@}{20\bp@}\selectfont}
+\renewcommand\bibfont{\fontsize{10.5\bp@}{16\bp@}\selectfont}
 \setlength{\bibsep}{0\p@ \@plus.2\p@}
 \setlength{\bibhang}{2\ccwd}
 \renewcommand\@biblabel[1]{[#1]\hfill}
 \renewcommand\bibsection{%
+  \clearpage
   \@mainmatterfalse
-  \chapter{\bibname}%
+  \begingroup
+    \ctexset{
+      chapter/format=\centering\bfseries\fontsize{10.5\bp@}{16\bp@}\selectfont,
+      chapter/beforeskip=0\bp@,
+      chapter/afterskip=0\bp@,
+    }%
+    \chapter{\bibname}%
+  \endgroup
   \@mainmattertrue
-  \fontsize{10.5\bp@}{15\bp@}\selectfont
+  \fontsize{10.5\bp@}{16\bp@}\selectfont
+  \setlength{\parskip}{0\p@}
 }
 \newenvironment{acknowledgements}{%
   \chapter{\ustc@acknowledgementsname}%

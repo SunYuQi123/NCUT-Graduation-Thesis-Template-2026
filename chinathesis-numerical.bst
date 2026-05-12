@@ -141,7 +141,7 @@ FUNCTION {bbl.colon} { ": " }
 
 FUNCTION {bbl.wide.space} { "\quad " }
 
-FUNCTION {bbl.slash} { "//\allowbreak " }
+FUNCTION {bbl.slash} { " // " }
 
 FUNCTION {bbl.sine.loco}
 { entry.lang lang.zh =
@@ -883,7 +883,7 @@ FUNCTION {format.mark}
           if$
         }
       if$
-      "\allowbreak[" entry.mark * "]" *
+      " [" entry.mark * "]" *
     }
     { "" }
   if$
