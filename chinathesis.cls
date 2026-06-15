@@ -48,7 +48,7 @@
   \PassOptionsToClass{oneside}{book}
 \fi
 \PassOptionsToPackage{quiet}{xeCJK}
-\LoadClass[UTF8,b5j,openright,zihao=-4]{ctexbook}[2016/05/16]
+\LoadClass[UTF8,openright,zihao=-4]{ctexbook}[2016/05/16]
 \@ifclasslater{ctexbook}{2016/05/16}{}{
   \ClassError{chinathesis}{%
     This template requires TeX Live\MessageBreak 2016 or later version}{}
@@ -192,6 +192,10 @@
     \setmathfont[range={cal,bfcal},StylisticSet=1]{xits-math.otf}
   \fi
 \fi
+% [格式检测修复] 将数学模式中的拉丁字母与阿拉伯数字重定向到 Times New Roman，
+% 满足学校规范「公式中英文、数字使用 Times New Roman」要求（消除 XITSMath 提醒）。
+\setmathfont[range={up/{latin,Latin},`0-`9}]{Times New Roman}
+\setmathfont[range={it/{latin,Latin}}]{Times New Roman Italic}
 \ustc@strifeq{\ustc@fontset}{mac}{
   \newfontfamily\ustc@circlefont{Songti SC Light}
 }{
@@ -282,11 +286,15 @@
 %%  footskip   = 0.79cm,
 %%}
 \geometry{
-  paper      = b5j,
-  top        = 4.5cm,
-  bottom     = 2.5cm,
-  left       = 2.5cm,
-  right      = 2.5cm,
+  paper         = a4paper,
+  left          = 2.54cm,
+  right         = 2.05cm,
+  top           = 2.54cm,
+  bottom        = 2.05cm,
+  bindingoffset = 0cm,
+  headheight    = 0.45cm,
+  headsep       = 0.59cm,
+  footskip      = 0.75cm,
 }
 \@ifclasslater{ctexbook}{2016/09/21}{
   \def\chaptermark#1{%
@@ -310,28 +318,59 @@
   }
 }
 \let\sectionmark\@gobble
-\pagestyle{plain}
 \def\ps@none{}
 
-\setlength{\headheight}{14\p@}
-% 定义正文页眉样式（fancy）：北方工业大学本科毕业设计(论文) + 横线 + 居中页码
-\fancypagestyle{main}{%
+\newcommand\ustc@RomanPage[1]{%
+  \ifcase#1\relax
+  \or Ⅰ%
+  \or Ⅱ%
+  \or Ⅲ%
+  \or Ⅳ%
+  \or Ⅴ%
+  \or Ⅵ%
+  \or Ⅶ%
+  \or Ⅷ%
+  \or Ⅸ%
+  \or Ⅹ%
+  \or Ⅺ%
+  \or Ⅻ%
+  \else \Roman{page}%
+  \fi
+}
+\newcommand\ustc@pagefont{\songti\fontsize{10.5\bp@}{10.5\bp@}\selectfont}
+\newcommand\ustc@headerfont{\songti\fontsize{9\bp@}{9\bp@}\selectfont}
+\fancypagestyle{plain}{%
   \fancyhf{}%
-  \fancyhead[C]{\fontsize{9\bp@}{12\bp@}\selectfont 北方工业大学本科毕业设计(论文)}%
-  \fancyfoot[C]{\fontsize{9\bp@}{12\bp@}\selectfont\thepage}%
-  \renewcommand{\headrulewidth}{0.5\p@}%
+  \fancyfoot[C]{\ustc@pagefont\thepage}%
+  \renewcommand{\headrulewidth}{0\p@}%
   \renewcommand{\footrulewidth}{0\p@}%
 }
-% 正文章节首页也使用 fancy 样式（保留页眉横线）
+% 正文页眉：学校规范要求宋体小五号、居中、单倍行距。
+\fancypagestyle{main}{%
+  \fancyhf{}%
+  \fancyhead[C]{\ustc@headerfont 北方工业大学本科生学士学位论文（毕业设计）}%
+  \fancyfoot[C]{\ustc@pagefont\thepage}%
+  \renewcommand{\headrulewidth}{0\p@}%
+  \renewcommand{\footrulewidth}{0\p@}%
+}
+% 正文章节首页也使用正文页眉样式。
 \ctexset{chapter/pagestyle=main}
+\pagestyle{plain}
 
 \def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
   \hbox{}\thispagestyle{empty}\newpage\if@twocolumn\hbox{}\newpage\fi\fi\fi}
 \renewcommand\frontmatter{%
   \cleardoublepage
   \@mainmatterfalse
-  \pagenumbering{Roman}%
+  \pagenumbering{arabic}%
+  \renewcommand\thepage{\ustc@RomanPage{\value{page}}}%
   \pagestyle{plain}%
+}
+\renewcommand\mainmatter{%
+  \cleardoublepage
+  \@mainmattertrue
+  \pagenumbering{arabic}%
+  \pagestyle{main}%
 }
 \def\ustc@define@term#1#2{%
   \expandafter\gdef\csname #1\endcsname##1{%
@@ -388,39 +427,40 @@
   \if@restonecol\twocolumn \else \newpage \fi
 }
 \newcommand{\wideunderline}[2][2em]{\underline{\makebox[\ifdim\width>#1\width\else#1\fi]{#2}}}
+\newcommand\ustc@coverinfo[2]{%
+  \makebox[4.8em][s]{\textbf{#1}} & #2\\[0.35em]%
+}
 \newcommand\ustc@makezhtitle{%
   \ustc@setchinese
   \begin{titlepage}%
     \ustc@pdfbookmark{封面}%
     \centering
-    \parbox[t][0.6cm][t]{\textwidth}{%
-      \raggedleft\fangsong\fontsize{14\bp@}{14\bp@}\selectfont
-      \null\ustc@secretlevel\par}\par
-    \vskip 0.3cm%
+    \vspace*{0.6cm}%
     {\bfseries\fontsize{25\bp@}{25\bp@}\selectfont
       \ustc@universityname\par}
     \vskip 0.3cm%
     {\fontsize{25\bp@}{25\bp@}\selectfont
       \ustc@thesisname\par}%
-    \vskip 0.3cm%
+    \vskip 1.0cm%
     {\bfseries\fontsize{15\bp@}{19\bp@}\selectfont
       \ustc@title\par}
     \vskip 0.15cm%
     {\fontsize{10.5\bp@}{14\bp@}\selectfont
       \ustc@entitle\par}
-    \vskip 0.3cm%
-    \includegraphics[width=0.35\textwidth]{figures/chinathesis-logo.pdf}\par
-    \vskip 0.5cm%
+    \vskip 1.25cm%
     {\fontsize{16\bp@}{16\bp@}\selectfont
-    \begin{tabular}{@{}l@{\hspace{\ccwd}}l@{}}%
-      \makebox[5em][s]{\textbf{学院：}}    &    \makebox[10em][s]{\wideunderline[10em]{\ustc@college}} \\
-      \makebox[5em][s]{\textbf{专业班级：}} &    \makebox[10em][s]{\wideunderline[10em]{\ustc@classname}} \\
-      \makebox[5em][s]{\textbf{学号：}}    &    \makebox[10em][s]{\wideunderline[10em]{\ustc@studentid}} \\
-      \makebox[5em][s]{\textbf{姓名：}}    &    \makebox[10em][s]{\wideunderline[10em]{\ustc@author}} \\
-      \makebox[5em][s]{\textbf{指导老师：}} &    \makebox[10em][s]{\wideunderline[10em]{\ustc@supervisor}} \\
-      \makebox[5em][s]{\textbf{校外导师：}} &    \makebox[10em][s]{\wideunderline[10em]{\ifx\ustc@cosupervisor\@empty 无\else\ustc@cosupervisor\fi}} \\
+    \begin{tabular}{@{}l@{\hspace{1.2em}}l@{}}%
+      \ustc@coverinfo{学\hspace{\fill}院：}{\ustc@college}
+      \ustc@coverinfo{专\hspace{\fill}业：}{\ustc@major}
+      \ustc@coverinfo{姓\hspace{\fill}名：}{\ustc@author}
+      \ustc@coverinfo{学\hspace{\fill}号：}{\ustc@studentid}
+      \ustc@coverinfo{指导教师：}{\ustc@supervisor}
+      \ustc@coverinfo{校外导师：}{\ifx\ustc@cosupervisor\@empty 无\else\ustc@cosupervisor\fi}
     \end{tabular}
     \par}%
+    \vfill
+    {\fontsize{16\bp@}{20\bp@}\selectfont \ustc@date\par}
+    \vspace*{0.35cm}%
   \end{titlepage}%
   \ustc@setdefaultlanguage
 }
@@ -487,25 +527,27 @@
   \begin{titlepage}
     \ustc@setchinese
     \centering
-    {\bfseries\fontsize{16\bp@}{24\bp@}\selectfont 原创性声明及使用授权说明\par}
+    {\bfseries\fontsize{22\bp@}{30\bp@}\selectfont 原创性声明及使用授权说明\par}
     \vskip 1em
     \begin{flushleft}
       \fontsize{12\bp@}{22\bp@}\selectfont
       \textbf{本人郑重声明：}
       \par\vskip 0.5em
-      \hspace{2em}所呈交的毕业论文，是本人在指导教师的指导下，独立进行研究所取得的成果。论文中已经注明引用的内容外，本论文不含任何其他个人或集体已经发表或撰写过的作品或成果。对本文的研究做出重要贡献的个人和集体，均已在文中以明确方式标明。本声明的法律结果由本人承担。
+      \hspace{2em}所呈交的毕业论文，是本人在指导教师的指导下，独立进行研究所取得的成果。除文中已经注明引用的内容外，本论文不含任何其他个人或集体已经发表或撰写过的作品或成果。对本文的研究做出重要贡献的个人和集体，均已在文中以明确方式标明。本声明的法律结果由本人承担。
       \par\vskip 0.5em
-      \hspace{2em}本人完全了解国家、学校、学院关于学术不端行为处理的有关规定。如在论文写作、答辩过程中以及发表本论文存在学术不端，一切后果（包括终止当前批次论文文写作、毕业论文成绩不及格、不能按时获得毕业证书、取消学位申请资格、开除学籍等）均由本人承担。
+      \hspace{2em}本人完全了解国家、学校、学院关于学术不端行为处理的有关规定，如在论文写作、答辩过程中或以后发现本论文存在学术不端，一切后果（包括终止当前批次论文写作、毕业论文成绩不及格、不能按时获得毕业证书、取消学位申请资格、开除学籍等）均由本人承担。
       \par\vskip 0.5em
-      \hspace{2em}本人完全了解学校保留或向国家有关部门或机构送交论文的印刷件和电子版，允许论文文被查阅和借阅；本人授权北方工业大学可以将本论文的全部或部分内容编入有关数据库进行检索，可以采用影印、缩印或其他复制手段保存和汇编本论文。
+      \hspace{2em}本人同意学校保留或向国家有关部门或机构送交论文的印刷件和电子版，允许论文被查阅和借阅；本人授权北方工业大学可以将本论文的全部或部分内容编入有关数据库进行检索，可以采用影印、缩印或其他复制手段保存和汇编本论文。
       \par\vskip 0.5em
       \hspace{2em}（保密论文在解密后应遵守此使用授权规定）
     \end{flushleft}
-    \vskip 2em
+    \vfill
     \begin{flushright}
       \fontsize{12\bp@}{22\bp@}\selectfont
-      论文作者签名：\underline{\hspace{6em}}\hspace{2em}
-      日期：\underline{\hspace{2em}}年\underline{\hspace{1.5em}}月\underline{\hspace{1.5em}}日
+      \begin{tabular}{@{}l@{\hspace{0.6em}}l@{}}
+        论文作者签名： & \underline{\hspace{6em}}\\[0.5em]
+        日期： & \underline{\hspace{2.5em}}年\underline{\hspace{1.5em}}月\underline{\hspace{1.5em}}日
+      \end{tabular}
     \end{flushright}
     \ustc@setdefaultlanguage
   \end{titlepage}
@@ -541,9 +583,9 @@
 \ctexset{
   chapter = {
     name = {},
-    format      = \centering\bfseries\fontsize{16\bp@}{26.67\bp@}\selectfont,
+    format      = \raggedright\bfseries\fontsize{16\bp@}{26.67\bp@}\selectfont,
     nameformat  = {},
-    titleformat = \ustc@spacetitle,
+    titleformat = {},
     number      = \thechapter,
     aftername   = \hspace{\ccwd},
   },
@@ -572,9 +614,8 @@
     afterskip  = 6\bp@,
   },
   subsection = {
-    format     = \bfseries\fontsize{12\bp@}{21.67\bp@}\selectfont,
+    format     = \bfseries\fontsize{14\bp@}{23.33\bp@}\selectfont,
     aftername  = \hspace{\ccwd},
-    indent     = 2\ccwd,
     beforeskip = 12\bp@,
     afterskip  = 6\bp@,
   },
@@ -582,7 +623,6 @@
     format     = \bfseries\fontsize{12\bp@}{20\bp@}\selectfont,
     number     = \arabic{subsubsection},
     aftername  = .\hspace{0.5\ccwd},
-    indent     = 2\ccwd,
     beforeskip = \z@,
     afterskip  = \z@,
   },
